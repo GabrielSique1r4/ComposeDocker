@@ -3,12 +3,6 @@
 
 ## 📌 Airflow
 
-### 🔹 Inicializar o banco de dados e criar usuário
-
-```bash
-docker-compose -f docker-compose-airflow.yml up airflow-init airflow-create-user
-```
-
 ### 🔹 Subir os serviços do Airflow
 
 ```bash
