@@ -16,9 +16,6 @@ x-airflow-common:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
-  depends_on:
-    - postgres
-    - redis
 
 services:
   postgres:
@@ -31,27 +28,28 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:latest
-
-  airflow-webserver:
-    <<: *airflow-common
-    ports:
-      - "8081:8080"
-    command: webserver
-
-  airflow-scheduler:
-    <<: *airflow-common
-    command: scheduler
-
-  airflow-worker:
-    <<: *airflow-common
-    command: celery worker
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   airflow-init:
     <<: *airflow-common
     command: db init
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   airflow-create-user:
     <<: *airflow-common
@@ -61,8 +59,31 @@ services:
         airflow users create --username airflow --password airflow --firstname Admin --lastname User --role Admin --email airflow@airflow.com
       "
     depends_on:
-      - postgres
-      - redis
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8081:8080"
+    depends_on:
+      airflow-create-user:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      airflow-create-user:
+        condition: service_completed_successfully
+
+  airflow-worker:
+    <<: *airflow-common
+    command: celery worker
+    depends_on:
+      airflow-create-user:
+        condition: service_completed_successfully
 
 volumes:
   postgres-db-volume:
