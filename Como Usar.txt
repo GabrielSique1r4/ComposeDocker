@@ -1,0 +1,52 @@
+Para rodar o compose do airflow execute:
+
+1- inicializar o banco e criar usuario:
+docker-compose -f docker-compose-airflow.yml up airflow-init airflow-create-user
+
+2- Subir o serviço do airflow: 
+docker-compose -f docker-compose-airflow.yml up -d
+
+
+
+Para rodar o compose do hop execute:
+docker compose -f docker-compose-apache-hop-server.yml up -d
+
+Para rodar o compose do spark:
+docker-compose -f docker-compose-spark.yml up -d
+
+SPARK-
+Spark Master UI
+http://localhost:8083
+Spark Worker UI
+http://localhost:8082
+Autenticação:
+Nenhuma por padrão
+Observação:
+Spark Standalone não vem com login/senha
+
+HOP-
+http://localhost:8080/ui
+Tipo de acesso
+Nenhuma autenticação por padrão
+API REST
+http://localhost:8080/hop
+Observação
+Requer configuração manual para autenticação (não vem ativada por padrão)
+
+AIRFLOW-
+http://localhost:8081 
+Usuário padrão
+airflow
+Senha padrão
+airflow
+Autenticação
+BasicAuth / Web Login (configurado via env)
+
+BANCO DE DADOS:
+Host: localhost (dentro do DBeaver)
+Porta: 5432
+Banco: airflow
+Usuário: airflow
+Senha: airflow
+Tipo de acesso: TCP (PostgreSQL protocol)
+

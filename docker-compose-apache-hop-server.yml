@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  hop:
+    image: apache/hop-web:2.4.0
+    container_name: hop-all-in-one
+    ports:
+      - "8080:8080"  # Interface web e API do Hop Server
+    environment:
+      HOP_SERVER: "true"
+      HOP_SERVER_PORT: "8080"
+      HOP_SERVER_HOSTNAME: "localhost"
+      HOP_PROJECT_FOLDER: /files
+      HOP_PROJECT_NAME: default
+    volumes:
+      - ~/Documents/apache-hop:/files
