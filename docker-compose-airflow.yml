@@ -13,10 +13,10 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
   volumes:
-    - ./dags:/opt/airflow/dags
-    - ./logs:/opt/airflow/logs
-    - ./plugins:/opt/airflow/plugins
-
+    - ${AIRFLOW_HOME}/dags:/opt/airflow/dags
+    - ${AIRFLOW_HOME}/logs:/opt/airflow/logs
+    - ${AIRFLOW_HOME}/plugins:/opt/airflow/plugins
+    - /Users/gabrielsiqueira/Documents/airflow/dags:/opt/airflow/dags
 services:
   postgres:
     image: postgres:13
